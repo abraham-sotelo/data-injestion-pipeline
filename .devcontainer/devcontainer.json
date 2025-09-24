@@ -1,0 +1,24 @@
+{
+  "name": "Sensor data pipeline",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "UID": "${env:UID}",
+      "GID": "${env:GID}",
+      "USERNAME": "${env:USER}",
+      "TZ_PATH": "${env:TZ_PATH}"
+    }
+  },
+  "forwardPorts": [],
+  "remoteUser": "${localEnv:USER}",
+  "workspaceFolder": "/woven",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/woven,type=bind",
+  "customizations": {
+    "vscode": {
+      "extensions":[
+        "GitHub.copilot",
+        "ms-azuretools.vscode-containers",
+      ]
+    }
+  }
+}
