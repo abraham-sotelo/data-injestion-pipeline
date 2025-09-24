@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 # Rate in ms: use first script argument if given, otherwise default to 100
 RATE="${1:-100}"
