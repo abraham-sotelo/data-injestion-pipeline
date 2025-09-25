@@ -28,14 +28,12 @@ def row_to_json(row: Dict[str, Any]) -> str:
   """Return a JSON string for a single CSV row with timestamp enrichment.
 
   Adds:
-    ts_iso: ISO-8601 UTC timestamp
-    ts:     epoch seconds (int)
+    ts: ISO-8601 UTC timestamp
   """
   now = datetime.now(timezone.utc)
   enriched = dict(row)
   # Add timestamps in two formats to see what is more suitable for later processing
-  enriched["ts_iso"] = now.isoformat()
-  enriched["ts"] = int(now.timestamp())
+  enriched["ts"] = now.isoformat()
   return json.dumps(enriched, ensure_ascii=False)
 
 
@@ -58,7 +56,7 @@ def main():
     raise SystemExit(1)
 
   sqs = boto3.client("sqs", region_name="mx-central-1")
-  queue_url = "https://sqs.mx-central-1.amazonaws.com/364218291784/sensor-data-queue"
+  queue_url = "https://sqs.mx-central-1.amazonaws.com/364218291784/woven-data-pipeline-challenge-sensor-data"
 
   emitted = 0
   try:

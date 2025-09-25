@@ -1,5 +1,5 @@
 resource "aws_sqs_queue" "sensor_queue" {
-  name                      = "sensor-data-queue"
+  name                      = "${var.project_label}-sensor-data"
   visibility_timeout_seconds = 30    # default time a msg is invisible to others when received
   message_retention_seconds  = 3600  # keep msgs 1 hour
   delay_seconds              = 0     # no delivery delay

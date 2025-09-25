@@ -1,8 +1,8 @@
 # S3 bucket
-resource "aws_s3_bucket" "data_bucket" {
-  bucket = "${var.project_label}-sensor-data-12345"
-  tags   = {Project = var.project_label}
-}
+#resource "aws_s3_bucket" "data_bucket" {
+#  bucket = "${var.project_label}-sensor-data-12345"
+#  tags   = {Project = var.project_label}
+#}
 
 
 # DynamoDB table to store raw events for last-5-minute window
@@ -10,9 +10,9 @@ resource "aws_dynamodb_table" "sensor_events" {
   name         = "${var.project_label}-sensor-events"
   billing_mode = "PAY_PER_REQUEST"
 
-  # Primary key lets us efficiently query by time window
-  hash_key  = "pk"  # constant partition key
-  range_key = "sk"  # sort key
+  # Primary key: constant pk + sortable sk (e.g. "ts#uuid")
+  hash_key  = "pk"
+  range_key = "ts"
 
   attribute {
     name = "pk"
@@ -20,11 +20,11 @@ resource "aws_dynamodb_table" "sensor_events" {
   }
 
   attribute {
-    name = "sk"
+    name = "ts"
     type = "S"
   }
 
-  # Optional: GSI to query per-county, ordered by time
+  # GSI: query per-county, ordered by time via sk
   attribute {
     name = "county"
     type = "S"
@@ -33,14 +33,26 @@ resource "aws_dynamodb_table" "sensor_events" {
   global_secondary_index {
     name            = "CountyIndex"
     hash_key        = "county"
-    range_key       = "sk"
+    range_key       = "ts"
     projection_type = "ALL"
   }
 
-  # TTL so items disappear ~5 minutes after arrival
-  ttl {
-    attribute_name = "expires_at" # Number: UNIX epoch seconds
-    enabled        = true
+  tags = {
+    Project = var.project_label
+  }
+}
+
+
+
+# 2. DynamoDB Aggregates table
+resource "aws_dynamodb_table" "county_aggregates" {
+  name         = "${var.project_label}-county_aggregates"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "County"
+
+  attribute {
+    name = "County"
+    type = "S"
   }
 
   tags = {

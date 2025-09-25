@@ -1,6 +1,7 @@
 *.csv
 __pycache__
 .env
+.venv
 
 # Ignore everything in infra except terraform files
 infra/**
