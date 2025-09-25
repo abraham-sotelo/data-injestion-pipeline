@@ -11,13 +11,13 @@ PK_VALUE = "EVT"  # constant partition key
 
 def lambda_handler(event, context):
     now = datetime.now(timezone.utc)
-    one_minute_ago = now - timedelta(minutes=1)
+    window = now - timedelta(minutes=5)
 
     # Keys for BETWEEN (lexicographically sorted because ts starts with timestamp)
-    start_key = one_minute_ago.isoformat(timespec="milliseconds").replace("+00:00", "Z")
+    start_key = window.isoformat(timespec="milliseconds").replace("+00:00", "Z")
     end_key = now.isoformat(timespec="milliseconds").replace("+00:00", "Z")
 
-    # Query the last 1 minute of events
+    # Query the last 5 minutes of events
     items = []
     last_evaluated_key = None
 
@@ -48,15 +48,17 @@ def lambda_handler(event, context):
             county_counts[county] += 1
 
     # Store results in aggregate table
+    item = {
+        "updated": {"S": now.isoformat()},
+        "total_events": {"N": str(len(items))},  # total events in the window
+    }
     for county, count in county_counts.items():
-        dynamodb.put_item(
-            TableName=AGGREGATE_TABLE,
-            Item={
-                "County": {"S": county},
-                "count_last_1min": {"N": str(count)},
-                "last_updated": {"S": now.isoformat()},
-            },
-        )
+        item[county] = {"N": str(count)}
+
+    dynamodb.put_item(
+        TableName=AGGREGATE_TABLE,
+        Item=item,
+    )
 
     print(f"Aggregated {len(items)} events across {len(county_counts)} counties")
     return {

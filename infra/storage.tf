@@ -48,10 +48,10 @@ resource "aws_dynamodb_table" "sensor_events" {
 resource "aws_dynamodb_table" "county_aggregates" {
   name         = "${var.project_label}-county_aggregates"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "County"
+  hash_key     = "updated"
 
   attribute {
-    name = "County"
+    name = "updated"
     type = "S"
   }
 
