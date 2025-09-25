@@ -17,6 +17,7 @@ Flags:
 import csv
 import json
 import time
+import boto3
 import argparse
 from pathlib import Path
 from datetime import datetime, timezone
@@ -56,13 +57,17 @@ def main():
     print(f"CSV file not found: {csv_file}")
     raise SystemExit(1)
 
+  sqs = boto3.client("sqs", region_name="mx-central-1")
+  queue_url = "https://sqs.mx-central-1.amazonaws.com/364218291784/sensor-data-queue"
+
   emitted = 0
   try:
     while True:
       with csv_file.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-          print(row_to_json(row), flush=True)
+          response = sqs.send_message(QueueUrl=queue_url, MessageBody=row_to_json(row))
+          print("Message sent. ID:", response["MessageId"])
           emitted += 1
           if args.limit is not None and emitted >= args.limit:
             print(f"Emitted {emitted} records", flush=True)
@@ -71,6 +76,7 @@ def main():
       if not args.loop:
         break
     print(f"Emitted {emitted} records", flush=True)
+    
   except KeyboardInterrupt:
     print(f"Interrupted. Emitted {emitted} records", flush=True)
 

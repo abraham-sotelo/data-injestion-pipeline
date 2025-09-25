@@ -18,6 +18,7 @@
       "extensions":[
         "GitHub.copilot",
         "ms-azuretools.vscode-containers",
+        "hashicorp.terraform"
       ]
     }
   }

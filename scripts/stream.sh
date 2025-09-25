@@ -10,5 +10,7 @@ if ! [[ "$RATE" =~ ^[0-9]+$ ]]; then
 fi
 
 cd "$(dirname "$0")"
+echo ">>> Activating virtual environment"
+source "../.venv/bin/activate"
 echo "Running Data Streaming..."
 python3 ../app/producer/main.py --rate-ms="$RATE" --loop
