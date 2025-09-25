@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -euo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")"
 
 VENV_DIR=".venv"
 REQUIREMENTS_FILE="app/producer/requirements.txt"
