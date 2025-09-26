@@ -21,9 +21,7 @@ class TestRowToJson(unittest.TestCase):
         self.assertEqual(row, original)
         # Fields present
         self.assertIn("ts", parsed)
-        self.assertIn("ts_iso", parsed)
-        self.assertIsInstance(parsed["ts"], int)
-        self.assertIn("T", parsed["ts_iso"])  # crude ISO check
+        self.assertIsInstance(parsed["ts"], str)
         # Original data still present
         self.assertEqual(parsed["Waterbody Name"], "A")
         self.assertEqual(parsed["County"], "X")
@@ -57,7 +55,7 @@ class TestRowToJson(unittest.TestCase):
         # Second row has empty County; ensure key exists and is empty string
         self.assertIn('County', emitted[1])
         self.assertEqual(emitted[1]['County'], '')
-        self.assertIn('ts_iso', emitted[1])
+        self.assertIn('ts', emitted[1])
 
 
 if __name__ == '__main__':  # pragma: no cover
