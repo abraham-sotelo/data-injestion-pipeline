@@ -6,13 +6,6 @@ variable "project_label" {
 variable "aws_region" {
   description = "AWS region to deploy resources into"
   type        = string
-  default     = "mx-central-1"
-}
-
-# SQS Queue configuration
-variable "sensor_queue_name" {
-  description = "Explicit SQS queue name (leave null to auto-compose from project_label)"
-  type        = string
   default     = null
 }
 
@@ -50,20 +43,6 @@ variable "sqs_lambda_batch_size" {
   description = "Batch size for SQS -> Lambda event source mapping"
   type        = number
   default     = 1
-}
-
-
-# DynamoDB table configuration
-variable "raw_events_table_name" {
-  description = "Override for raw sensor events table name"
-  type        = string
-  default     = null
-}
-
-variable "aggregates_table_name" {
-  description = "Override for county aggregates table name"
-  type        = string
-  default     = null
 }
 
 # Lambda configuration

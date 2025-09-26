@@ -7,12 +7,12 @@
 
 # DynamoDB table to store raw events for last-5-minute window
 locals {
-  resolved_raw_events_table = coalesce(var.raw_events_table_name, "${var.project_label}-sensor-events")
-  resolved_aggregates_table = coalesce(var.aggregates_table_name, "${var.project_label}-county_aggregates")
+  raw_events_table = "${var.project_label}-sensor-events"
+  aggregates_table = "${var.project_label}-county_aggregates"
 }
 
 resource "aws_dynamodb_table" "sensor_events" {
-  name         = local.resolved_raw_events_table
+  name         = local.raw_events_table
   billing_mode = "PAY_PER_REQUEST"
 
   # Primary key: constant pk + sortable sk (e.g. "ts#uuid")
@@ -60,7 +60,7 @@ output "sensor_table_name" {
 
 # 2. DynamoDB Aggregates table
 resource "aws_dynamodb_table" "county_aggregates" {
-  name         = local.resolved_aggregates_table
+  name         = local.aggregates_table
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "updated"
 

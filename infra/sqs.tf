@@ -1,9 +1,9 @@
 locals {
-  resolved_sensor_queue_name = coalesce(var.sensor_queue_name, "${var.project_label}-sensor-data")
+  sensor_queue_name = "${var.project_label}-sensor-data"
 }
 
 resource "aws_sqs_queue" "sensor_queue" {
-  name                       = local.resolved_sensor_queue_name
+  name                       = local.sensor_queue_name
   visibility_timeout_seconds = var.sensor_queue_visibility_timeout
   message_retention_seconds  = var.sensor_queue_retention_seconds
   delay_seconds              = var.sensor_queue_delay_seconds
