@@ -32,3 +32,15 @@ mkdir -p build
 rm -f build/lambda_storing.zip build/lambda_aggregation.zip
 zip -j build/lambda_storing.zip src/lambda_storing.py
 zip -j build/lambda_aggregation.zip src/lambda_aggregation.py
+
+CSV_FILE="Recommended_Fishing_Rivers_And_Streams.csv"
+CSV_URL="https://data.ny.gov/api/views/jcxg-7gnm/rows.csv?accessType=DOWNLOAD"
+
+echo ">>> Checking for $CSV_FILE"
+if [ -f "$CSV_FILE" ]; then
+    echo ">>> $CSV_FILE already exists. Skipping download."
+else
+    echo ">>> $CSV_FILE not found. Downloading from $CSV_URL"
+    curl -fSL -o "$CSV_FILE" "$CSV_URL"
+    echo ">>> Download complete: $CSV_FILE"
+fi
