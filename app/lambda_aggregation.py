@@ -2,14 +2,18 @@ import os
 import boto3
 from datetime import datetime, timedelta, timezone
 from collections import Counter
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 dynamodb = boto3.client("dynamodb")
 
-RAW_TABLE = os.environ["RAW_TABLE"]
-AGGREGATE_TABLE = os.environ["AGGREGATE_TABLE"]
-PK_VALUE = "EVT"  # constant partition key
-
 def lambda_handler(event, context):
+    RAW_TABLE = os.environ["RAW_TABLE"]
+    AGGREGATE_TABLE = os.environ["AGGREGATE_TABLE"]
+    PK_VALUE = "EVT"  # constant partition key
+
     now = datetime.now(timezone.utc)
     window = now - timedelta(minutes=5)
 
@@ -60,7 +64,7 @@ def lambda_handler(event, context):
         Item=item,
     )
 
-    print(f"Aggregated {len(items)} events across {len(county_counts)} counties")
+    logger.info(f"Aggregated {len(items)} events across {len(county_counts)} counties")
     return {
         "statusCode": 200,
         "body": {
