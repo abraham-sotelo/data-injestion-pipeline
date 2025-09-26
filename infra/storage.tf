@@ -37,6 +37,12 @@ resource "aws_dynamodb_table" "sensor_events" {
     projection_type = "ALL"
   }
 
+  # TTL so items disappear ~5 minutes after arriva
+  ttl {
+    attribute_name = "expires_at"
+    enabled        = true
+  }
+
   tags = {
     Project = var.project_label
   }

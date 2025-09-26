@@ -132,7 +132,7 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
 resource "aws_cloudwatch_event_rule" "every_minute" {
   name                = "run-aggregation-every-minute"
   schedule_expression = "rate(1 minute)"
-  state               = "DISABLED"   # disable aggregator trigger
+  state               = "ENABLED"   # disable aggregator trigger
 }
 
 resource "aws_cloudwatch_event_target" "lambda_target" {
