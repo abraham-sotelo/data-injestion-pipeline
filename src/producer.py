@@ -14,6 +14,7 @@ Flags:
   --limit N     : stop after N records (default: all). Use with --loop to stream continuously.
   --loop        : when reaching EOF, start again from the top (default: False)
 """
+import os
 import csv
 import json
 import time
@@ -23,6 +24,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 from typing import Dict, Any
 
+QUEUE_URL = os.environ["QUEUE_URL"]
 
 def row_to_json(row: Dict[str, Any]) -> str:
   """Return a JSON string for a single CSV row with timestamp enrichment.
@@ -58,8 +60,7 @@ def main():
     print(f"CSV file not found: {csv_file}")
     raise SystemExit(1)
 
-  sqs = boto3.client("sqs", region_name="mx-central-1")
-  queue_url = "https://sqs.mx-central-1.amazonaws.com/364218291784/woven-data-pipeline-challenge-sensor-data"
+  sqs = boto3.client("sqs")
 
   emitted = 0
   try:
@@ -67,7 +68,7 @@ def main():
       with csv_file.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-          response = sqs.send_message(QueueUrl=queue_url, MessageBody=row_to_json(row))
+          response = sqs.send_message(QueueUrl=QUEUE_URL, MessageBody=row_to_json(row))
           print("Message sent. ID:", response["MessageId"])
           emitted += 1
           if args.limit is not None and emitted >= args.limit:

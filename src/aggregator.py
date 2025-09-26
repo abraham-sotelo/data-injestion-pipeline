@@ -6,7 +6,7 @@ import argparse
 import os
 
 # Name of your aggregation Lambda function
-AGGREGATION_LAMBDA = "woven-data-pipeline-challenge-aggregation"
+AGGREGATION_LAMBDA = os.environ.get("AGGREGATION_LAMBDA")
 
 def invoke_aggregation_lambda():
   client = boto3.client("lambda")

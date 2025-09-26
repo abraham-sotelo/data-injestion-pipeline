@@ -11,5 +11,7 @@ fi
 cd "$(dirname "$0")"
 echo ">>> Activating virtual environment"
 source ".venv/bin/activate"
+
+export AGGREGATION_LAMBDA=$(terraform -chdir=infra output -raw aggregation_lambda_name)
 echo ">>> Running Data Streaming..."
 python3 src/aggregator.py --interval="$SECONDS"

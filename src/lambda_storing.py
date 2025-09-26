@@ -12,9 +12,9 @@ s3 = boto3.client("s3")
 dynamodb = boto3.resource("dynamodb")
 
 # Environment variables
-EVENTS_TABLE = "woven-data-pipeline-challenge-sensor-events"
+RAW_TABLE = os.environ["RAW_TABLE"]
 
-table = dynamodb.Table(EVENTS_TABLE)
+table = dynamodb.Table(RAW_TABLE)
 
 
 def lambda_handler(event, context):

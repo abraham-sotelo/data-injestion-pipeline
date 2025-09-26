@@ -3,10 +3,15 @@ resource "aws_lambda_function" "storing" {
   function_name    = "${var.project_label}-storing"
   role             = aws_iam_role.lambda_exec.arn
   handler          = "lambda_storing.lambda_handler"
-  runtime          = "python3.12"
-  filename         = "../build/lambda_storing.zip"
-  source_code_hash = filebase64sha256("../build/lambda_storing.zip")
+  runtime          = var.lambda_runtime
+  filename         = var.storing_lambda_zip
+  source_code_hash = filebase64sha256(var.storing_lambda_zip)
   tags             = { Project = var.project_label }
+  environment {
+    variables = {
+      RAW_TABLE = aws_dynamodb_table.sensor_events.name
+    }
+  }
 }
 
 #Lambda aggregate function
@@ -14,9 +19,9 @@ resource "aws_lambda_function" "aggregation" {
   function_name    = "${var.project_label}-aggregation"
   role             = aws_iam_role.lambda_exec.arn
   handler          = "lambda_aggregation.lambda_handler"
-  runtime          = "python3.12"
-  filename         = "../build/lambda_aggregation.zip"
-  source_code_hash = filebase64sha256("../build/lambda_aggregation.zip")
+  runtime          = var.lambda_runtime
+  filename         = var.aggregation_lambda_zip
+  source_code_hash = filebase64sha256(var.aggregation_lambda_zip)
   tags             = { Project = var.project_label }
 
   environment {
@@ -60,7 +65,7 @@ resource "aws_iam_role_policy_attachment" "lambda_policy_attach" {
 resource "aws_lambda_event_source_mapping" "sqs_trigger" {
   event_source_arn = aws_sqs_queue.sensor_queue.arn
   function_name    = aws_lambda_function.storing.arn
-  batch_size       = 1
+  batch_size       = var.sqs_lambda_batch_size
   enabled          = true
   tags             = { Project = var.project_label }
 }
@@ -86,24 +91,6 @@ resource "aws_iam_role_policy" "lambda_sqs" {
     ]
   })
 }
-
-
-# IAM Policy to allow Lambda to write to S3
-# resource "aws_iam_role_policy" "lambda_s3" {
-#   name = "lambda_s3_policy"
-#   role = aws_iam_role.lambda_exec.id
-#
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Effect   = "Allow"
-#         Action   = ["s3:PutObject"]
-#         Resource = "${aws_s3_bucket.data_bucket.arn}/*"
-#       }
-#     ]
-#   })
-# }
 
 
 # IAM Policy to allow Lambda to write to DynamoDB
@@ -135,8 +122,8 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
 # EventBridge rule to trigger every minute
 resource "aws_cloudwatch_event_rule" "every_minute" {
   name                = "run-aggregation-every-minute"
-  schedule_expression = "rate(1 minute)"
-  state               = "ENABLED" # disable aggregator trigger
+  schedule_expression = var.aggregation_schedule_expression
+  state               = var.enable_aggregation_schedule ? "ENABLED" : "DISABLED"
 }
 
 resource "aws_cloudwatch_event_target" "lambda_target" {

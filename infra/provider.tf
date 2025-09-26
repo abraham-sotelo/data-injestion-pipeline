@@ -9,5 +9,5 @@ terraform {
 }
 
 provider "aws" {
-  region = "mx-central-1"
+  region = var.aws_region
 }

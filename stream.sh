@@ -13,4 +13,5 @@ cd "$(dirname "$0")"
 echo ">>> Activating virtual environment"
 source ".venv/bin/activate"
 echo ">>> Running Data Streaming..."
+export QUEUE_URL=$(terraform -chdir=infra output -raw sensor_queue_url)
 python3 src/producer.py --rate-ms="$RATE" --loop

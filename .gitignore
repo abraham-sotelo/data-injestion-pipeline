@@ -4,6 +4,7 @@ __pycache__
 .venv/
 build/
 
-# Ignore everything in infra except terraform files
+# Ignore everything in infra except source files
 infra/**
 !infra/*.tf
+!infra/*.tfvars
