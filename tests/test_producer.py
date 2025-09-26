@@ -8,7 +8,7 @@ from io import StringIO
 from pathlib import Path
 from copy import deepcopy
 
-from app.producer.main import row_to_json
+from src.producer import row_to_json
 
 
 class TestRowToJson(unittest.TestCase):

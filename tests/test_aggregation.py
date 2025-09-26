@@ -2,12 +2,12 @@ import unittest
 import os
 from unittest.mock import patch, MagicMock
 from collections import Counter
-from app.lambda_aggregation import lambda_handler
+from src.lambda_aggregation import lambda_handler
 
 
 class TestAggregationLambda(unittest.TestCase):
     @patch.dict(os.environ, {"RAW_TABLE": "raw_test", "AGGREGATE_TABLE": "agg_test"})
-    @patch("app.lambda_aggregation.dynamodb")
+    @patch("src.lambda_aggregation.dynamodb")
     def test_counts_and_writes_correctly(self, mock_dynamodb):
         # Fake DynamoDB query response
         mock_dynamodb.query.side_effect = [
@@ -43,7 +43,7 @@ class TestAggregationLambda(unittest.TestCase):
 
 
     @patch.dict(os.environ, {"RAW_TABLE": "raw_test", "AGGREGATE_TABLE": "agg_test"})
-    @patch("app.lambda_aggregation.dynamodb")
+    @patch("src.lambda_aggregation.dynamodb")
     def test_no_items(self, mock_dynamodb):
         mock_dynamodb.query.return_value = {"Items": [], "LastEvaluatedKey": None}
         mock_dynamodb.put_item.return_value = {}
@@ -59,7 +59,7 @@ class TestAggregationLambda(unittest.TestCase):
 
 
     @patch.dict(os.environ, {"RAW_TABLE": "raw_test", "AGGREGATE_TABLE": "agg_test"})
-    @patch("app.lambda_aggregation.dynamodb")
+    @patch("src.lambda_aggregation.dynamodb")
     def test_missing_county(self, mock_dynamodb):
         mock_dynamodb.query.return_value = {
             "Items": [

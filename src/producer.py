@@ -7,11 +7,11 @@ Each emitted object includes two timestamp fields:
  - `ts`: integer epoch seconds
 
 Usage:
-  python -m app.producer.main --rate-ms 100 --loop
+  python -m src.producer --rate-ms 100 --loop
 
 Flags:
   --rate-ms N   : milliseconds between records (default 100)
-  --limit N     : stop after N records (default: all rows). Use with --loop to stream continuously.
+  --limit N     : stop after N records (default: all). Use with --loop to stream continuously.
   --loop        : when reaching EOF, start again from the top (default: False)
 """
 import csv
@@ -48,7 +48,7 @@ def parse_args():
 
 def main():
   args = parse_args()
-  repo_root = Path(__file__).resolve().parents[2]
+  repo_root = Path(__file__).resolve().parents[1]
   csv_file = repo_root / args.csv_file
 
   if not csv_file.exists():

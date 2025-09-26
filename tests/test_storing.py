@@ -1,10 +1,10 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import json
-from app.lambda_storing import lambda_handler
+from src.lambda_storing import lambda_handler
 
 class TestLambdaHandler(unittest.TestCase):
-    @patch("app.lambda_storing.table")
+    @patch("src.lambda_storing.table")
     def test_valid_message(self, mock_table):
         event = {
             "Records": [
@@ -30,7 +30,7 @@ class TestLambdaHandler(unittest.TestCase):
         self.assertIsInstance(item["expires_at"], int)
         self.assertEqual(result["statusCode"], 200)
 
-    @patch("app.lambda_storing.table")
+    @patch("src.lambda_storing.table")
     def test_missing_ts(self, mock_table):
         event = {
             "Records": [
@@ -44,7 +44,7 @@ class TestLambdaHandler(unittest.TestCase):
         with self.assertRaises(KeyError):  # ts is required
             lambda_handler(event, None)
 
-    @patch("app.lambda_storing.table")
+    @patch("src.lambda_storing.table")
     def test_corrupt_json(self, mock_table):
         event = {
             "Records": [
@@ -56,7 +56,7 @@ class TestLambdaHandler(unittest.TestCase):
         with self.assertRaises(json.JSONDecodeError):
             lambda_handler(event, None)
 
-    @patch("app.lambda_storing.table")
+    @patch("src.lambda_storing.table")
     def test_dynamodb_failure(self, mock_table):
         event = {
             "Records": [

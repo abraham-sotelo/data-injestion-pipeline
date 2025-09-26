@@ -1,11 +1,13 @@
 #!/bin/bash
 set -euo pipefail
+cd "$(dirname "$0")"
 
-cd "$(dirname "$0")/infra"
+echo ">>> Building project before deployment"
+source ./build.sh
+
+cd infra
 echo ">>> Deploying infrastructure with Terraform"
-
-zip -j lambda_storing.zip ../app/lambda_storing.py
-zip -j lambda_aggregation.zip ../app/lambda_aggregation.py
-
+terraform init -input=false
+terraform fmt -recursive
 terraform plan
 terraform apply -auto-approve
