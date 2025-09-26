@@ -48,6 +48,9 @@ resource "aws_dynamodb_table" "sensor_events" {
   }
 }
 
+output "sensor_table_name" {
+  value = aws_dynamodb_table.sensor_events.name
+}
 
 
 # 2. DynamoDB Aggregates table
@@ -64,4 +67,8 @@ resource "aws_dynamodb_table" "county_aggregates" {
   tags = {
     Project = var.project_label
   }
+}
+
+output "aggregate_table_name" {
+  value = aws_dynamodb_table.county_aggregates.name
 }

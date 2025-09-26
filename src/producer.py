@@ -41,7 +41,10 @@ def parse_args():
   p = argparse.ArgumentParser(description="Stream CSV rows as JSON at a cadence")
   p.add_argument("--rate-ms", type=int, default=100, help="Milliseconds between records (default 100)")
   p.add_argument("--limit", type=int, default=None, help="Maximum number of records to emit (default: all)")
-  p.add_argument("--loop", action="store_true", help="Loop over the CSV indefinitely")
+  loop_group = p.add_mutually_exclusive_group()
+  loop_group.add_argument("--loop", dest="loop", action="store_true", help="Loop over the CSV indefinitely")
+  loop_group.add_argument("--no-loop", dest="loop", action="store_false", help="Do not loop")
+  p.set_defaults(loop=True)  # default to looping
   p.add_argument("--csv-file", default=Path("Recommended_Fishing_Rivers_And_Streams.csv"), help="CSV file path")
   return p.parse_args()
 

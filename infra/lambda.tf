@@ -27,6 +27,10 @@ resource "aws_lambda_function" "aggregation" {
   }
 }
 
+# Output the aggregation Lambda name for e2e tests
+output "aggregation_lambda_name" {
+  value = aws_lambda_function.aggregation.function_name
+}
 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_exec" {

@@ -59,6 +59,10 @@ def lambda_handler(event, context):
     for county, count in county_counts.items():
         item[county] = {"N": str(count)}
 
+    # Include test_run_id to avoid race condition in e2e tests
+    if isinstance(event, dict) and "test_run_id" in event:
+        item["test_run_id"] = {"S": event["test_run_id"]}
+
     dynamodb.put_item(
         TableName=AGGREGATE_TABLE,
         Item=item,

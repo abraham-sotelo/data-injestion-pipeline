@@ -23,3 +23,24 @@ I will implement the 5-minute County aggregation in a **Lambda function** that u
 - Keeps the aggregation logic serverless, lightweight, and easy to test.
 - DynamoDB supports efficient updates and queries without additional infrastructure.
 - Suitable for the challenge scale, but for higher throughput, a streaming service (e.g., Kinesis, Flink) may be required.
+
+## 5. End-to-End Testing
+The E2E test will stream sample data through the ingestion pipeline and then query the aggregate table to confirm the data was processed correctly.  
+
+### Strategy
+1. **Produce fresh events**  
+   The test runs `producer.py` with a fixed `--limit` to stream a known number of samples into the pipeline.
+
+2. **Trigger aggregation Lambda**  
+   The aggregator is invoked directly (bypassing the scheduled run) with a unique `test_run_id`.  
+   This ensures the test queries only the aggregate row created by this run.
+
+3. **Query aggregate table**  
+   The test fetches the row tagged with `test_run_id` and records its `updated` timestamp.
+
+4. **Recompute locally**  
+   Using the same 5-minute window ending at `updated`, the test queries the sensor data table and counts events per county.
+
+5. **Compare results**  
+   The locally computed totals and per-county counts are compared with the DynamoDB aggregate row.  
+   Any mismatch causes the test to fail with a clear diagnostic message.
