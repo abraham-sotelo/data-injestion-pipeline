@@ -1,6 +1,6 @@
 variable "project_label" {
   description = "Base label for resources"
-  default     = "woven-data-pipeline-challenge-asotelo"
+  default     = "data-pipeline-challenge-asotelo"
 }
 
 variable "aws_region" {
@@ -68,7 +68,7 @@ variable "aggregation_lambda_zip" {
 variable "enable_aggregation_schedule" {
   description = "Whether to enable the EventBridge schedule for the aggregation lambda"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "aggregation_schedule_expression" {
