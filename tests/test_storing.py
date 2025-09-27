@@ -24,7 +24,7 @@ class TestLambdaHandler(unittest.TestCase):
         item = kwargs["Item"]
 
         self.assertEqual(item["ts"], "2025-09-25T12:00:00Z")
-        self.assertEqual(item["county"], "Albany")
+        self.assertEqual(item["County"], "Albany")
         self.assertEqual(item["pk"], "EVT")
         self.assertIn("expires_at", item)
         self.assertIsInstance(item["expires_at"], int)

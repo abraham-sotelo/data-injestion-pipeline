@@ -44,20 +44,20 @@ def lambda_handler(event, context):
         if not last_evaluated_key:
             break
 
-    # Count per county
-    county_counts = Counter()
+    # Count per County
+    County_counts = Counter()
     for item in items:
-        county = item.get("county", {}).get("S")
-        if county:
-            county_counts[county] += 1
+        County = item.get("County", {}).get("S")
+        if County:
+            County_counts[County] += 1
 
     # Store results in aggregate table
     item = {
         "updated": {"S": now.isoformat()},
         "total_events": {"N": str(len(items))},  # total events in the window
     }
-    for county, count in county_counts.items():
-        item[county] = {"N": str(count)}
+    for County, count in County_counts.items():
+        item[County] = {"N": str(count)}
 
     # Include test_run_id to avoid race condition in e2e tests
     if isinstance(event, dict) and "test_run_id" in event:
@@ -68,11 +68,11 @@ def lambda_handler(event, context):
         Item=item,
     )
 
-    logger.info(f"Aggregated {len(items)} events across {len(county_counts)} counties")
+    logger.info(f"Aggregated {len(items)} events across {len(County_counts)} counties")
     return {
         "statusCode": 200,
         "body": {
             "total_events": len(items),
-            "county_counts": dict(county_counts),
+            "County_counts": dict(County_counts),
         },
     }

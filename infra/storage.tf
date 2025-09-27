@@ -8,7 +8,7 @@
 # DynamoDB table to store raw events for last-5-minute window
 locals {
   raw_events_table = "${var.project_label}-sensor-events"
-  aggregates_table = "${var.project_label}-county_aggregates"
+  aggregates_table = "${var.project_label}-County_aggregates"
 }
 
 resource "aws_dynamodb_table" "sensor_events" {
@@ -29,15 +29,15 @@ resource "aws_dynamodb_table" "sensor_events" {
     type = "S"
   }
 
-  # GSI: query per-county, ordered by time via sk
+  # GSI: query per-County, ordered by time via sk
   attribute {
-    name = "county"
+    name = "County"
     type = "S"
   }
 
   global_secondary_index {
     name            = "CountyIndex"
-    hash_key        = "county"
+    hash_key        = "County"
     range_key       = "ts"
     projection_type = "ALL"
   }
@@ -59,7 +59,7 @@ output "sensor_table_name" {
 
 
 # 2. DynamoDB Aggregates table
-resource "aws_dynamodb_table" "county_aggregates" {
+resource "aws_dynamodb_table" "County_aggregates" {
   name         = local.aggregates_table
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "updated"
@@ -75,5 +75,5 @@ resource "aws_dynamodb_table" "county_aggregates" {
 }
 
 output "aggregate_table_name" {
-  value = aws_dynamodb_table.county_aggregates.name
+  value = aws_dynamodb_table.County_aggregates.name
 }

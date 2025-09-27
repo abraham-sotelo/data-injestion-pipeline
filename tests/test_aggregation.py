@@ -13,9 +13,9 @@ class TestAggregationLambda(unittest.TestCase):
         mock_dynamodb.query.side_effect = [
             {
                 "Items": [
-                    {"county": {"S": "Albany"}},
-                    {"county": {"S": "Albany"}},
-                    {"county": {"S": "Saratoga"}},
+                    {"County": {"S": "Albany"}},
+                    {"County": {"S": "Albany"}},
+                    {"County": {"S": "Saratoga"}},
                 ],
                 "LastEvaluatedKey": None,
             }
@@ -39,7 +39,7 @@ class TestAggregationLambda(unittest.TestCase):
         # Check lambda response
         self.assertEqual(result["statusCode"], 200)
         self.assertEqual(result["body"]["total_events"], 3)
-        self.assertEqual(result["body"]["county_counts"], {"Albany": 2, "Saratoga": 1})
+        self.assertEqual(result["body"]["County_counts"], {"Albany": 2, "Saratoga": 1})
 
 
     @patch.dict(os.environ, {"RAW_TABLE": "raw_test", "AGGREGATE_TABLE": "agg_test"})
@@ -55,16 +55,16 @@ class TestAggregationLambda(unittest.TestCase):
 
         self.assertEqual(item["total_events"]["N"], "0")
         self.assertEqual(result["body"]["total_events"], 0)
-        self.assertEqual(result["body"]["county_counts"], {})
+        self.assertEqual(result["body"]["County_counts"], {})
 
 
     @patch.dict(os.environ, {"RAW_TABLE": "raw_test", "AGGREGATE_TABLE": "agg_test"})
     @patch("src.lambda_aggregation.dynamodb")
-    def test_missing_county(self, mock_dynamodb):
+    def test_missing_County(self, mock_dynamodb):
         mock_dynamodb.query.return_value = {
             "Items": [
-                {},  # no county attribute
-                {"county": {"S": "Albany"}},
+                {},  # no County attribute
+                {"County": {"S": "Albany"}},
             ],
             "LastEvaluatedKey": None,
         }
@@ -80,7 +80,7 @@ class TestAggregationLambda(unittest.TestCase):
         self.assertEqual(item["Albany"]["N"], "1")
         self.assertNotIn("UNKNOWN", item)  # you didn't default to UNKNOWN
 
-        self.assertEqual(result["body"]["county_counts"], {"Albany": 1})
+        self.assertEqual(result["body"]["County_counts"], {"Albany": 1})
 
 
 if __name__ == "__main__":

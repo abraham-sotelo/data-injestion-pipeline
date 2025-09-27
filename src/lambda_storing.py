@@ -24,12 +24,10 @@ def lambda_handler(event, context):
         ts_dt = datetime.fromisoformat(body["ts"])
 
         # Write item to DynamoDB
-        item = {
-            "pk": "EVT",
-            "ts": body["ts"],
-            "county": body.get("County", "UNKNOWN"),
-            "expires_at": int((ts_dt + timedelta(minutes=6)).timestamp())
-        }
+        item = {k: v for k, v in body.items() if v is not None}
+        item["pk"] = "EVT"
+        item["expires_at"] = int((ts_dt + timedelta(minutes=6)).timestamp())
+        
         try:
             table.put_item(Item=item)
             logger.info(f"Stored event {record['messageId']} in DynamoDB")

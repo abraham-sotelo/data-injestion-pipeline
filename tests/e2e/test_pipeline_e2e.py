@@ -82,9 +82,9 @@ class TestPipelineE2E(unittest.TestCase):
         # Calculate aggregation from sensor table items
         local_counts = Counter()
         for it in items:
-            county = it.get("county")
-            if county:
-                local_counts[county] += 1
+            County = it.get("County")
+            if County:
+                local_counts[County] += 1
         local_total = len(items)
 
         # Aggregation values from aggregates table
@@ -106,7 +106,7 @@ class TestPipelineE2E(unittest.TestCase):
 
         # Assertions
         self.assertEqual(agg_total, local_total, f"Total mismatch. agg={agg_total}, local={local_total}")
-        self.assertEqual(agg_counts, dict(local_counts), f"Per-county mismatch.\nagg={agg_counts}\nlocal={dict(local_counts)}")
+        self.assertEqual(agg_counts, dict(local_counts), f"Per-County mismatch.\nagg={agg_counts}\nlocal={dict(local_counts)}")
 
 
 if __name__ == "__main__":

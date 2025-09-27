@@ -39,8 +39,8 @@ The E2E test will stream sample data through the ingestion pipeline and then que
    The test fetches the row tagged with `test_run_id` and records its `updated` timestamp.
 
 4. **Recompute locally**  
-   Using the same 5-minute window ending at `updated`, the test queries the sensor data table and counts events per county.
+   Using the same 5-minute window ending at `updated`, the test queries the sensor data table and counts events per County.
 
 5. **Compare results**  
-   The locally computed totals and per-county counts are compared with the DynamoDB aggregate row.  
+   The locally computed totals and per-County counts are compared with the DynamoDB aggregate row.  
    Any mismatch causes the test to fail with a clear diagnostic message.

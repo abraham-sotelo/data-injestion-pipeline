@@ -68,8 +68,9 @@ def main():
       with csv_file.open("r", encoding="utf-8", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-          response = sqs.send_message(QueueUrl=QUEUE_URL, MessageBody=row_to_json(row))
-          print("Message sent. ID:", response["MessageId"])
+          data = row_to_json(row)
+          response = sqs.send_message(QueueUrl=QUEUE_URL, MessageBody=data)
+          print("Message sent. ID:", response["MessageId"], json.loads(data)["County"])
           emitted += 1
           if args.limit is not None and emitted >= args.limit:
             print(f"Emitted {emitted} records", flush=True)

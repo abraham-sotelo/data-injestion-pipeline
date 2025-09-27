@@ -27,7 +27,7 @@ resource "aws_lambda_function" "aggregation" {
   environment {
     variables = {
       RAW_TABLE       = aws_dynamodb_table.sensor_events.name
-      AGGREGATE_TABLE = aws_dynamodb_table.county_aggregates.name
+      AGGREGATE_TABLE = aws_dynamodb_table.County_aggregates.name
     }
   }
 }
@@ -111,7 +111,7 @@ resource "aws_iam_role_policy" "lambda_dynamodb_policy" {
         ],
         Resource = [
           aws_dynamodb_table.sensor_events.arn,
-          aws_dynamodb_table.county_aggregates.arn
+          aws_dynamodb_table.County_aggregates.arn
         ]
       }
     ]

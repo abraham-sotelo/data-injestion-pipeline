@@ -10,5 +10,5 @@ aggregation_lambda_zip = "../build/lambda_aggregation.zip"
 sqs_lambda_batch_size = 1
 
 # Schedule (disabled by default)
-enable_aggregation_schedule     = false
+enable_aggregation_schedule     = true
 aggregation_schedule_expression = "rate(1 minute)"
